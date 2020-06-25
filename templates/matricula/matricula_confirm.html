@@ -1,0 +1,15 @@
+{% extends 'base/base.html' %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="x_panel">
+                    <div class="x_content text-center">
+                        <embed src="{% url 'lab:reporte_matricula' %}" type="application/json"
+                               width="90%" height="700px">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

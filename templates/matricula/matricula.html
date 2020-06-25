@@ -1,0 +1,166 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block styles %}
+    <style>
+        table tr td {
+            vertical-align: middle !important;
+            font-size: 15px;
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-4">
+                <div class="x_panel">
+                    <div class="x_content">
+                        <ul class="nav nav-tabs justify-content-start bar_tabs" id="myTab" role="tablist">
+                            {% for l in labs %}
+                                <li class="nav-item">
+                                    <a class="nav-link {% if forloop.first %}active{% endif %}"
+                                       id="{{ l.laboratory.description }}-tab"
+                                       style="font-size: 14px;font-weight: bold;"
+                                       data-toggle="tab"
+                                       href="#{{ l.laboratory.description }}" role="tab"
+                                       aria-controls="home"
+                                       aria-selected=" {% if forloop.first %}true{% else %}false{% endif %}">{{ l.laboratory.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            {% for t in labs %}
+                                <div class="tab-pane fade show{% if forloop.first %} active{% endif %}"
+                                     id="{{ t.laboratory.description }}" role="tabpanel"
+                                     aria-labelledby="{{ t.laboratory.description }}-tab">
+                                    <div id="{{ t.laboratory.description }}"></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5 col-sm-4">
+                {#                <form action="{% url 'matricula:matricula_cursos' %}" method="POST">#}
+                <form action="">
+                    {% csrf_token %}
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h4>Cursos {% if obj %} Matriculados {% else %} Seleccionados {% endif %} </h4>
+                        </div>
+                        <div class="x_content">
+
+                            <div class="x_content">
+                                <table class="table" id="horarioNuevo">
+                                    <thead>
+                                    <tr>
+                                        <th hidden>id</th>
+                                        <th>curso</th>
+                                        <th>dia</th>
+                                        <th>hora inicio</th>
+                                        <th>hora fin</th>
+                                        <th>action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                                <div class="row">
+                                    <button type="button" class="btn btn-primary" id="matricular">Guardar</button>
+                                    <a class="btn btn-danger" href="{% url 'base:home' %}">Cancelar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <input type="text" id="idCurso" name="idCurso">
+                    <button class="btn btn-primary">Guardar</button> -->
+                </form>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        let chatSocket = new WebSocket(
+            'ws://' + window.location.host + '/ws/chat/'
+        )
+
+        chatSocket.onmessage = function (e) {
+            let data = JSON.parse(e.data);
+            let message = data['message'];
+            updateHorarios();
+            console.log(message);
+        }
+
+        chatSocket.onclose = function (e) {
+            console.error('Chat socket closed');
+        }
+
+        $(document).ready(function () {
+            {% for tb in labs %}
+                $('#{{tb.laboratory.description}}').append(generarTabla({
+                    days: ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'sabado'],
+                    startdate: 6,
+                    enddate: 20,
+                    laboratory: '{{ tb.laboratory.description }}'
+                }));
+            {% endfor %}
+
+            horarios();
+            //setInterval(updateHorarios, 1000);
+
+
+        });
+        {% if not obj %}
+            document.querySelector('#matricular').onclick = function (e) {
+                let ids = [];
+                $('#horarioNuevo tr').each(function () {
+                    let pk = $(this).find("td").eq(0).html();
+                    if (pk !== undefined) {
+                        ids.push(pk);
+                    }
+                });
+
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url 'matricula:matricula_cursos' %}',
+                    data: {
+                        ids: JSON.stringify(ids),
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                    },
+                    success: function (res) {
+                        if (res) {
+                            chatSocket.send(JSON.stringify({"message": ids}));
+                            window.location.href =
+                                '{% url 'lab:matricula_confirm' %}'
+                        }
+                    }
+                })
+            }
+        {% endif %}
+        function horarios() {
+            $.ajax({
+                url: "horarios_list/",
+                success: function (data) {
+                    addClass({data: data})
+                }
+            })
+        }
+
+        function updateHorarios() {
+            $.ajax({
+                url: "horarios_list/",
+                success: function (data) {
+                    updateClass({data: data})
+                }
+            })
+        }
+    </script>
+{% endblock %}
+{% block scripts %}
+    <script src="{% static 'utils/enrollment.js' %}"></script>
+{% endblock %}
