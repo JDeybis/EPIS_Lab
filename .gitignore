@@ -14,5 +14,17 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+### VisualStudioCode template
+.vscode/*
 
-base/migrations/0001_initial.py
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Compiled static dir
+static/
