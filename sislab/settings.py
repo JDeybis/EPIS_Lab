@@ -24,7 +24,7 @@ SECRET_KEY = 'lxzg6&!7q9#xfa36+uoh=)6d&)yv0^vj(%pihs55kiel44b8+-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.presi.club', '127.0.0.1']
+ALLOWED_HOSTS = ['ponti.presi.club', '127.0.0.1']
 
 # Application definition
 
