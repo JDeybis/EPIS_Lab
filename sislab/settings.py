@@ -86,10 +86,10 @@ CHANNEL_LAYERS = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'sislab',
-        'USER': 'postgres',
-        'PASSWORD': 'admin',
-        'HOST': '127.0.0.1',
+        'NAME': 'sistemaslab',
+        'USER': 'presi',
+        'PASSWORD': '_admin_tareo@2020_',
+        'HOST': 'presi.club',
         'PORT': 5432,
     }
 }
