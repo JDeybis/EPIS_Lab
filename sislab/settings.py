@@ -24,7 +24,7 @@ SECRET_KEY = 'lxzg6&!7q9#xfa36+uoh=)6d&)yv0^vj(%pihs55kiel44b8+-'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.presi.club', '127.0.0.1']
 
 # Application definition
 
@@ -89,7 +89,7 @@ DATABASES = {
         'NAME': 'sistemaslab',
         'USER': 'presi',
         'PASSWORD': '_admin_tareo@2020_',
-        'HOST': 'presi.club',
+        'HOST': 'localhost',
         'PORT': 5432,
     }
 }
