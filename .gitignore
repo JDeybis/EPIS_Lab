@@ -27,4 +27,4 @@ env.bak/
 venv.bak/
 
 # Compiled static dir
-static/
+static/admin
